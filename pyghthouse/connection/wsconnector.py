@@ -42,6 +42,8 @@ class WSConnector:
         self.lock.acquire()
         kwargs = {"sslopt": {"cert_reqs": CERT_NONE}} if self.ignore_ssl_cert else None
         Thread(target=self.ws.run_forever, kwargs=kwargs).start()
+        self.lock.acquire() # wait for connection to be established
+        self.lock.release()
 
     def _fail(self, ws, err):
         self.lock.release()
