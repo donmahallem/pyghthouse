@@ -136,7 +136,8 @@ class Pyghthouse:
     >>>     x = clip(x, 0, 27)
     >>>     y = clip(y, 0, 13)
 
-    There are more code examples in the git repository (https://github.com/Musicted/pyghthouse).
+    There are more code examples in the git repository 
+    (https://github.com/ProjectLighthouseCAU/pyghthouse/tree/master/examples).
     """
 
     class PHMessageHandler:
@@ -160,7 +161,7 @@ class Pyghthouse:
 
         @staticmethod
         def print_warning(msg):
-            print(f"Warning: {msg['RNUM']} {msg['RESPONSE']} {', '.join(msg['WARNIGS'])}")
+            print(f"Warning: {msg['RNUM']} {msg['RESPONSE']} {', '.join(msg['WARNINGS'])}")
 
     class PHThread(Thread):
 
