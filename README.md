@@ -8,13 +8,13 @@ A Python Lighthouse Adapter
 
 Example scripts can be found [here](examples)
 
-## Troubeshooting
+## Troubleshooting
 
 If you are experiencing errors regarding SSL certificates,
 instantiate Pyghthouse using the `ignore_ssl_cert=True`
 keyword argument.
 
-## Requiered packages
+## Required packages
 - websocket-client
 - msgpack
 
