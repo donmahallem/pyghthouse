@@ -15,7 +15,7 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     install_requires=[
-        'numpy >= 1.23, < 2',
+        'numpy >= 1.23',
         'websocket-client >= 1.6, < 2',
         'msgpack >= 1.0, < 2',
     ],
