@@ -6,7 +6,7 @@ from signal import signal, SIGINT
 import numpy as np
 
 from pyghthouse.data.canvas import PyghthouseCanvas
-from pyghthouse.connection.wsconnector import WSConnector
+from pyghthouse.connection.wsconnector import WSConnector,ConnectionState
 
 
 class VerbosityLevel(Enum):
@@ -208,10 +208,12 @@ class Pyghthouse:
         self.connector.start()
 
     def start(self):
-        if not self.connector.running:
+        if not self.connector.connection_state==ConnectionState.CONNECTED:
             self.connect()
         self.stop()
         self.msg_handler.reset()
+        while not self.connector.connection_state==ConnectionState.CONNECTED:
+            sleep(100)
         self.ph_thread = self.PHThread(self)
         self.ph_thread.start()
 

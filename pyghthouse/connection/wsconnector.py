@@ -1,9 +1,15 @@
+from enum import Enum
 from threading import Thread, Lock
 from websocket import WebSocketApp, setdefaulttimeout, ABNF
 from msgpack import packb, unpackb
 from ssl import CERT_NONE
 
 
+class ConnectionState(Enum):
+    NONE=0
+    CONNECTING=1
+    CONNECTED=2
+    FAILED=3
 class WSConnector:
 
     class REID:
@@ -26,7 +32,7 @@ class WSConnector:
         self.ws = None
         self.lock = Lock()
         self.reid = self.REID()
-        self.running = False
+        self.__connection_state = ConnectionState.NONE
         self.ignore_ssl_cert = ignore_ssl_cert
         setdefaulttimeout(60)
 
@@ -40,10 +46,13 @@ class WSConnector:
                                on_message=None if self.on_msg is None else self._handle_msg,
                                on_open=self._ready, on_error=self._fail)
         self.lock.acquire() # wait for connection to be established
+        self.__connection_state = ConnectionState.CONNECTING
         kwargs = {"sslopt": {"cert_reqs": CERT_NONE}} if self.ignore_ssl_cert else None
         Thread(target=self.ws.run_forever, kwargs=kwargs).start()
+        
 
     def _fail(self, ws, err):
+        self.__connection_state = ConnectionState.FAILED
         self.lock.release()
         raise err
 
@@ -51,14 +60,18 @@ class WSConnector:
         if self.ws is not None:
             with self.lock:
                 print("Closing the connection.")
-                self.running = False
+                self.__connection_state = ConnectionState.NONE
                 self.ws.close()
                 self.ws = None
 
     def _ready(self, ws):
         print(f"Connected to {self.address}.")
-        self.running = True
+        self.__connection_state = ConnectionState.CONNECTED
         self.lock.release()
+
+    @property
+    def connection_state(self):
+        return self.__connection_state
 
     def _handle_msg(self, ws, msg):
         if isinstance(msg, bytes):
