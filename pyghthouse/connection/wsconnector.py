@@ -39,11 +39,9 @@ class WSConnector:
         self.ws = WebSocketApp(self.address,
                                on_message=None if self.on_msg is None else self._handle_msg,
                                on_open=self._ready, on_error=self._fail)
-        self.lock.acquire()
+        self.lock.acquire() # wait for connection to be established
         kwargs = {"sslopt": {"cert_reqs": CERT_NONE}} if self.ignore_ssl_cert else None
         Thread(target=self.ws.run_forever, kwargs=kwargs).start()
-        self.lock.acquire() # wait for connection to be established
-        self.lock.release()
 
     def _fail(self, ws, err):
         self.lock.release()
