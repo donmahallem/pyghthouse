@@ -212,7 +212,14 @@ class Pyghthouse:
             self.connect()
         self.stop()
         self.msg_handler.reset()
-        while not self.connector.connection_state==ConnectionState.CONNECTED:
+        while True:
+            state=self.connector.connection_state
+            if state==ConnectionState.CONNECTED:
+                # Connected
+                break
+            elif state==ConnectionState.FAILED:
+                # Connection failed
+                raise ConnectionError("Failed to connect")
             sleep(100)
         self.ph_thread = self.PHThread(self)
         self.ph_thread.start()
