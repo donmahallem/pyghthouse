@@ -166,7 +166,7 @@ class Pyghthouse:
     class PHThread(Thread):
 
         def __init__(self, parent):
-            super().__init__()
+            super().__init__(name = "PHThread")
             self.parent = parent
             self._stop_event = Event()
 

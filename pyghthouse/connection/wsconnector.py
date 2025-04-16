@@ -48,8 +48,8 @@ class WSConnector:
         self.lock.acquire() # wait for connection to be established
         self.__connection_state = ConnectionState.CONNECTING
         kwargs = {"sslopt": {"cert_reqs": CERT_NONE}} if self.ignore_ssl_cert else None
-        Thread(target=self.ws.run_forever, kwargs=kwargs).start()
-        
+        Thread(target=self.ws.run_forever, name="Websocket Thread", kwargs=kwargs).start()
+
 
     def _fail(self, ws, err):
         self.__connection_state = ConnectionState.FAILED
